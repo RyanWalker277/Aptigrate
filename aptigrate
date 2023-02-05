@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# getting args
+
+while getopts "o:c:" opt; do
+    case $opt in
+    o)
+        backup_dir="$OPTARG"
+        ;;
+    c)
+        cron_exp="$OPTARG"
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    esac
+done
+
+# check for all parameteres
+
+if [ -z "$backup_dir" ]
+    then echo "Empty Param : provide a backup directory"
+fi
+
+create_cron(){
+    USER = whoami
+    echo "$cron_exp root aptigrade -o /var/log/aptigrade/" | sudo tee /etc/crontab >/dev/null
+}
+
+create_backup() {
+    apt list --manual-installed | tee $backup_dir/backup.ap >/dev/null
+}
+
+DIR=`date +%y%m%d`
+DEST=/home/ubuntu/backups/$DIR
+mkdir $DEST
+
+if [ -d "$backup_dir" ]; then
+    # Take action if $DIR exists.
+    echo "Creating a backup in "$backup_dir"..."
+    create_backup
+else
+    mkdir $backup_dir >/dev/null 2>/dev/null
+fi
