@@ -63,6 +63,11 @@ Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
 
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
 ## Support++
 
 This project needs your shiny star ⭐.   
