@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# defining default variables
+
+default_dir="/var/log/aptigrate"
+
 # getting args
 
 while getopts "o:c:" opt; do
@@ -19,27 +23,35 @@ done
 
 # check for all parameteres
 
-if [ -z "$backup_dir" ]
-    then echo "Empty Param : provide a backup directory"
-fi
+# if [ -z "$backup_dir" ]; then
+#     echo "Empty Param : provide a backup directory"
+# fi
 
-create_cron(){
-    USER = whoami
-    echo "$cron_exp root aptigrade -o /var/log/aptigrade/" | sudo tee /etc/crontab >/dev/null
+source ./cron/cron.sh
+
+create_cron() {
+    cronexp= generate_cron $1
+    echo "$cronexp" 
+    # | sudo tee $PWD/test.txt >/dev/null
 }
 
 create_backup() {
-    apt list --manual-installed | tee $backup_dir/backup.ap >/dev/null
+    apt list --manual-installed | sudo tee $backup_dir/backup.ap >/dev/null
 }
 
-# DIR=`date +%y%m%d`
-# DEST=/home/ubuntu/backups/$DIR
-# mkdir $DEST
-
-if [ -d "$backup_dir" ]; then
-    # Take action if $DIR exists.
-    echo "Creating a backup in "$backup_dir"..."
-    create_backup
+if [ -z "$backup_dir" ]; then
+    apt list --manual-installed | sudo tee $default_dir/backup.ap >/dev/null
 else
-    mkdir $backup_dir >/dev/null 2>/dev/null
+    if [ -d "$backup_dir" ]; then
+        # Take action if $DIR exists.
+        echo "Creating a backup in "$backup_dir"..."
+        create_backup
+    else
+        mkdir $backup_dir >/dev/null 2>/dev/null
+    fi
+fi
+
+if [ -z "$cron_exp" ]; then
+    test= create_cron $cron_exp
+    echo $test
 fi
