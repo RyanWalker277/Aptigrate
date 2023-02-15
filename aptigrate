@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# defining default variables
+# default variables
 
 default_dir="/var/log/aptigrate"
+crondir="/var/spool/cron/crontabs"
 
 # getting args
 
@@ -13,6 +14,7 @@ while getopts "o:c:" opt; do
         ;;
     c)
         cron_exp="$OPTARG"
+        echo "$cron_exp"
         ;;
     \?)
         echo "Invalid option: -$OPTARG" >&2
@@ -21,23 +23,18 @@ while getopts "o:c:" opt; do
     esac
 done
 
-# check for all parameteres
-
-# if [ -z "$backup_dir" ]; then
-#     echo "Empty Param : provide a backup directory"
-# fi
-
-source ./cron/cron.sh
+# function definitions
 
 create_cron() {
-    cronexp= generate_cron $1
-    echo "$cronexp" 
-    # | sudo tee $PWD/test.txt >/dev/null
+    cronexp="$1 /usr/local/bin/aptigrate"
+    echo "$cronexp" | sudo tee $crondir/$USER>/dev/null
 }
 
 create_backup() {
     apt list --manual-installed | sudo tee $backup_dir/backup.ap >/dev/null
 }
+
+# creating backup
 
 if [ -z "$backup_dir" ]; then
     apt list --manual-installed | sudo tee $default_dir/backup.ap >/dev/null
@@ -51,7 +48,10 @@ else
     fi
 fi
 
+# creating cron
+
 if [ -z "$cron_exp" ]; then
-    test= create_cron $cron_exp
-    echo $test
+    :
+else
+    create_cron "$cron_exp"
 fi
