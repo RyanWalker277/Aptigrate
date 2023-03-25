@@ -94,6 +94,13 @@ See `contributing.md` for ways to get started.
             <br />
             <sub><b>Anvansh</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/hindu-muppala">
+            <img src="https://avatars.githubusercontent.com/u/120579608?v=4" width="100;" alt="hindu-muppala"/>
+            <br />
+            <sub><b>Hindu Muppala</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
